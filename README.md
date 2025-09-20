@@ -25,6 +25,6 @@ The magic behind this project is the combination of a few key technologies:
 
 ### **GitHub Pages**
 
-The project is currently hosted on **GitHub Pages**, which provides a simple and effective way to serve the static site directly from this repository. You can view the live demo here: `https://<your-username>.github.io/<your-repository-name>`.
+The project is currently hosted on **GitHub Pages**, which provides a simple and effective way to serve the static site directly from this repository. You can view the live demo here: <https://vab-jain.github.io/pdf-merger-website/>.
 
 This method requires no maintenance and the site automatically updates with every new commit to the main branch. 
