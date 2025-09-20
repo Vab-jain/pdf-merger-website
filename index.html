@@ -22,6 +22,12 @@
             const statusEl = document.getElementById('status');
             statusEl.textContent = 'Loading Python environment...';
 
+            // Reset state for a new merge
+            statusEl.textContent = '';
+            downloadLink.style.display = 'none';
+            downloadLink.classList.remove('ready-for-download'); // Remove the class from a previous run
+
+
             // 1. Load Pyodide and the pypdf library
             let pyodide = await loadPyodide();
             statusEl.textContent = 'Loading pypdf...';
@@ -74,10 +80,12 @@
             const blob = new Blob([mergedPdfData], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
             
-            const downloadLink = document.getElementById('downloadLink');
             downloadLink.href = url;
             downloadLink.download = mergedFileName;
             downloadLink.style.display = 'inline';
+            
+            // Add the CSS class to trigger the animation
+            downloadLink.classList.add('ready-for-download');
             
             statusEl.textContent = 'Merge successful!';
         }
