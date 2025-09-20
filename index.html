@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PDF Merger</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>PDF Merger</h1>
+        <p>Select multiple PDF files to merge them into a single document.</p>
+        
+        <input type="file" id="fileInput" multiple accept=".pdf">
+        <button onclick="mergePdfs()">Merge PDFs</button>
+        <div id="status"></div>
+        <br>
+        <a id="downloadLink" style="display: none;">Download Merged PDF</a>
+    </div>
+    <script>
+        async function mergePdfs() {
+            // Display a status message
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'Loading Python environment...';
+
+            // 1. Load Pyodide and the pypdf library
+            let pyodide = await loadPyodide();
+            statusEl.textContent = 'Loading pypdf...';
+            await pyodide.loadPackage("micropip");
+            await pyodide.runPythonAsync(`
+                import micropip
+                await micropip.install('pypdf')
+            `);
+
+            // 2. Get the files from the HTML input
+            const files = document.getElementById('fileInput').files;
+            if (files.length === 0) {
+                statusEl.textContent = 'Please select at least one PDF file.';
+                return;
+            }
+
+            statusEl.textContent = 'Merging PDFs...';
+            
+            // 3. Write files to Pyodide's virtual file system
+            const fileNames = [];
+            for (const file of files) {
+                const data = await file.arrayBuffer();
+                const uint8Array = new Uint8Array(data);
+                pyodide.FS.writeFile(file.name, uint8Array);
+                fileNames.push(file.name);
+            }
+
+            // 4. Run the Python script to merge the files
+            const mergedFileName = 'merged.pdf';
+            await pyodide.runPythonAsync(`
+                from pypdf import PdfWriter
+                import os
+
+                merger = PdfWriter()
+                
+                # The files are now available in the virtual file system
+                input_files = ${JSON.stringify(fileNames)};
+
+                for filename in input_files:
+                    merger.append(filename)
+
+                merger.write("${mergedFileName}")
+                merger.close()
+            `);
+
+            // 5. Read the merged file from the virtual file system
+            const mergedPdfData = pyodide.FS.readFile(mergedFileName, { encoding: 'binary' });
+
+            // 6. Create a Blob and a download link for the user
+            const blob = new Blob([mergedPdfData], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            
+            const downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = url;
+            downloadLink.download = mergedFileName;
+            downloadLink.style.display = 'inline';
+            
+            statusEl.textContent = 'Merge successful!';
+        }
+    </script>
+</body>
+</html>

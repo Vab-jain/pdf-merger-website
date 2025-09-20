@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif; /* Sets the font for the entire page */
+    background-color: #f4f4f9;      /* A light grey background */
+    color: #333;                   /* A dark grey font color */
+    display: flex;                 /* Uses Flexbox for easy centering */
+    justify-content: center;       /* Horizontally centers content */
+    align-items: center;           /* Vertically centers content */
+    height: 100vh;                 /* Makes the body take up the full viewport height */
+    margin: 0;                     /* Removes default margin */
+}
+
+.container {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+h1 {
+    color: #4a4a4a;
+    margin-bottom: 1rem;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+input[type="file"] {
+    display: block;
+    margin: 1rem auto;
+    border: 2px dashed #ccc; /* Dashed border for a file-drop feel */
+    padding: 1rem;
+    cursor: pointer;
+    background-color: #fafafa;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Adds a smooth transition on hover */
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#status {
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+#downloadLink {
+    display: block !important;
+    margin-top: 1rem;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
