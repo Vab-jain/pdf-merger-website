@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>PDF Merger</h1>
+        <h1>Online PDF Merger</h1>
         <p>Select multiple PDF files to merge them into a single document.</p>
         
         <input type="file" id="fileInput" multiple accept=".pdf">
@@ -31,6 +31,20 @@
         <br>
         <a id="downloadLink" style="display: none;">Download Merged PDF</a>
     </div>
+
+    <div class="info-container">
+        <div class="highlight-safe">
+            <strong>Your Data is Safe!</strong> 
+            <p>When you select files, all the magic happens locally in your browser. The data goes nowhere, ensuring your PDFs remain 100% private and secure.</p>
+        </div>
+
+        <p style="text-align: left; margin-top: 1.5rem;">
+            View the source code on the <a href="https://github.com/vab-jain/pdf-merger-website" target="_blank">GitHub repository</a>.
+        </p>
+        
+
+    </div>
+
     <script>
         // 1. Create a global array to store the files
         let selectedFilesArray = [];

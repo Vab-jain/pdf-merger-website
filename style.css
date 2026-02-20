@@ -3,10 +3,12 @@ body {
     background-color: #f4f4f9;
     color: #333;
     display: flex;
+    flex-direction: column;        /* NEW: Stacks the containers vertically */
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;             /* MODIFIED: Changed from height to min-height */
     margin: 0;
+    padding: 2rem 0;               /* NEW: Adds breathing room to the top and bottom */
 }
 
 .container {
@@ -186,4 +188,61 @@ button:hover {
     font-weight: bold;
     display: flex;
     align-items: center;
+}
+
+/* Project Information Container Styles */
+/* Project Information Container Styles */
+.info-container {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    max-width: 500px; /* MATCHES the main app container width */
+    width: 90%;
+    margin-top: 2rem;
+    line-height: 1.6;
+}
+
+/* Keep the other styles exactly as they were */
+.info-container hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 2rem 0 1rem;
+}
+
+.highlight-safe {
+    background-color: #e8f5e9; 
+    color: #2e7d32;            
+    padding: 1rem 1.5rem;
+    border-radius: 5px;
+    border-left: 5px solid #4caf50;
+    margin: 0; /* Removed top/bottom margin for a tighter fit */
+}
+
+.highlight-safe strong {
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.highlight-safe p {
+    margin: 0;
+    color: #1b5e20;
+}
+
+.author-info {
+    text-align: center;
+    font-weight: bold;
+    color: #888;
+    margin: 0;
+}
+
+.info-container a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.info-container a:hover {
+    text-decoration: underline;
 }
