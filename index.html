@@ -18,6 +18,14 @@
             <button id="clearAllBtn" class="btn-danger" onclick="clearAllFiles()" style="display: none;">Clear All Files</button>
         </div>
         
+        <div class="output-container">
+            <label for="outputFileName" class="output-label">Save as:</label>
+            <div class="input-group">
+                <input type="text" id="outputFileName" class="text-input" value="merged" placeholder="filename">
+                <span class="extension-label">.pdf</span>
+            </div>
+        </div>
+
         <button onclick="mergePdfs()">Merge PDFs</button>
         <div id="status"></div>
         <br>
@@ -158,7 +166,13 @@
                 fileNames.push(file.name);
             }
 
-            const mergedFileName = 'merged.pdf';
+            // Replace the mergedFileName logic in your mergePdfs() function with this:
+            let baseName = document.getElementById('outputFileName').value.trim() || 'merged';
+            if (baseName.toLowerCase().endsWith('.pdf')) {
+                baseName = baseName.slice(0, -4); // Remove .pdf if the user accidentally typed it
+            }
+            const mergedFileName = baseName + '.pdf';
+
             await pyodide.runPythonAsync(`
                 from pypdf import PdfWriter
                 import os
