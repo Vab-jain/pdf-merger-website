@@ -11,12 +11,45 @@
         <p>Select multiple PDF files to merge them into a single document.</p>
         
         <input type="file" id="fileInput" multiple accept=".pdf">
+        
+        <ul id="fileList" style="list-style-type: none; padding: 0;"></ul>
+        
         <button onclick="mergePdfs()">Merge PDFs</button>
         <div id="status"></div>
         <br>
         <a id="downloadLink" style="display: none;">Download Merged PDF</a>
     </div>
     <script>
+        // 1. Create a global array to store the files (since the default FileList is immutable)
+        let selectedFilesArray = [];
+
+        // 2. Listen for the 'change' event on the file input
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            // Convert the read-only FileList into a standard JavaScript array
+            selectedFilesArray = Array.from(event.target.files);
+            renderFileList();
+        });
+
+        // 3. Render the array to the DOM
+        function renderFileList() {
+            const listContainer = document.getElementById('fileList');
+            listContainer.innerHTML = ''; // Clear the current list before re-rendering
+
+            selectedFilesArray.forEach((file, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = file.name;
+                
+                // Add some basic inline styling for now (we'll expand on this in the CSS commit)
+                listItem.style.padding = '0.5rem';
+                listItem.style.margin = '0.5rem 0';
+                listItem.style.backgroundColor = '#f9f9f9';
+                listItem.style.border = '1px solid #ddd';
+                listItem.style.borderRadius = '4px';
+
+                listContainer.appendChild(listItem);
+            });
+        }
+        
         async function mergePdfs() {
             // Display a status message
             const statusEl = document.getElementById('status');
