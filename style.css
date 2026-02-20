@@ -1,19 +1,19 @@
 body {
-    font-family: Arial, sans-serif; /* Sets the font for the entire page */
-    background-color: #f4f4f9;      /* A light grey background */
-    color: #333;                   /* A dark grey font color */
-    display: flex;                 /* Uses Flexbox for easy centering */
-    justify-content: center;       /* Horizontally centers content */
-    align-items: center;           /* Vertically centers content */
-    height: 100vh;                 /* Makes the body take up the full viewport height */
-    margin: 0;                     /* Removes default margin */
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
 
 .container {
     background-color: #fff;
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     text-align: center;
     max-width: 500px;
     width: 90%;
@@ -32,7 +32,7 @@ p {
 input[type="file"] {
     display: block;
     margin: 1rem auto;
-    border: 2px dashed #ccc; /* Dashed border for a file-drop feel */
+    border: 2px dashed #ccc;
     padding: 1rem;
     cursor: pointer;
     background-color: #fafafa;
@@ -47,7 +47,7 @@ button {
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Adds a smooth transition on hover */
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
@@ -67,25 +67,15 @@ button:hover {
     font-weight: bold;
 }
 
-
 @keyframes pulse {
-    0% {
-        transform: scale(1);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.05); /* Slightly enlarge */
-        opacity: 0.8;
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 .ready-for-download {
-    animation: pulse 1s ease-in-out infinite; /* Apply the pulse animation */
-    background-color: #e0f7fa; /* A subtle background color */
+    animation: pulse 1s ease-in-out infinite;
+    background-color: #e0f7fa;
     padding: 10px;
     border-radius: 5px;
 }
@@ -95,12 +85,13 @@ button:hover {
     list-style-type: none;
     padding: 0;
     margin: 1rem 0;
-    text-align: left; /* Aligns file names to the left for better readability */
+    text-align: left;
 }
 
 .file-item {
-    display: flex;             /* Align the handle and text horizontally */
-    align-items: center;       /* Center them vertically */
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Spreads out the content and delete button */
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -111,20 +102,34 @@ button:hover {
     transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Add styles specific to the new drag handle */
 .drag-handle {
-    margin-right: 0.75rem;     /* Space between the icon and the file name */
-    color: #888;               /* A muted grey so it isn't distracting */
-    font-size: 1.2rem;         /* Make the icon slightly larger */
+    margin-right: 0.75rem;
+    color: #888;
+    font-size: 1.2rem;
     cursor: grab;
 }
 
 .file-item:hover {
-    background-color: #e9ecef; /* Slight darkening on hover */
+    background-color: #e9ecef;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .file-item:active {
-    cursor: grabbing; /* Changes cursor when the user is actively dragging */
-    background-color: #e0f7fa; /* Highlights the item being held */
+    cursor: grabbing;
+    background-color: #e0f7fa;
+}
+
+/* Delete Button Styles */
+.delete-btn {
+    color: #dc3545; /* Bootstrap danger red */
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    padding-left: 1rem;
+    transition: color 0.2s ease;
+}
+
+.delete-btn:hover {
+    color: #a71d2a;
 }

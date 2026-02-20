@@ -20,21 +20,26 @@
         <a id="downloadLink" style="display: none;">Download Merged PDF</a>
     </div>
     <script>
-        // 1. Create a global array to store the files (since the default FileList is immutable)
+        // 1. Create a global array to store the files
         let selectedFilesArray = [];
-        let draggedItemIndex = null; // Tracks the index of the item currently being dragged
+        let draggedItemIndex = null;
 
         // 2. Listen for the 'change' event on the file input
         document.getElementById('fileInput').addEventListener('change', function(event) {
-            // Convert the read-only FileList into a standard JavaScript array
-            selectedFilesArray = Array.from(event.target.files);
+            // Append newly selected files to the existing array
+            const newFiles = Array.from(event.target.files);
+            selectedFilesArray = [...selectedFilesArray, ...newFiles];
+            
+            // Clear the input value so the same file can be selected again
+            event.target.value = '';
+            
             renderFileList();
         });
 
         // 3. Render the array to the DOM
         function renderFileList() {
             const listContainer = document.getElementById('fileList');
-            listContainer.innerHTML = ''; // Clear the current list before re-rendering
+            listContainer.innerHTML = '';
 
             selectedFilesArray.forEach((file, index) => {
                 const listItem = document.createElement('li');
@@ -42,71 +47,75 @@
                 listItem.draggable = true;
                 listItem.dataset.index = index;
 
-                // 1. Create the drag handle
+                // Group handle and filename together
+                const fileInfo = document.createElement('div');
+                fileInfo.style.display = 'flex';
+                fileInfo.style.alignItems = 'center';
+
                 const dragHandle = document.createElement('span');
-                dragHandle.innerHTML = '&#9776;'; // Unicode for the three horizontal bars
+                dragHandle.innerHTML = '&#9776;';
                 dragHandle.classList.add('drag-handle');
 
-                // 2. Add the handle and the file name to the list item
-                listItem.appendChild(dragHandle);
-                listItem.appendChild(document.createTextNode(file.name));
+                fileInfo.appendChild(dragHandle);
+                fileInfo.appendChild(document.createTextNode(file.name));
+
+                // Create the delete button
+                const deleteBtn = document.createElement('span');
+                deleteBtn.innerHTML = '&times;'; // '×' symbol
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.onclick = function() {
+                    selectedFilesArray.splice(index, 1);
+                    renderFileList();
+                };
+
+                // Add elements to the list item
+                listItem.appendChild(fileInfo);
+                listItem.appendChild(deleteBtn);
 
                 // Attach drag-and-drop event listeners
                 listItem.addEventListener('dragstart', handleDragStart);
                 listItem.addEventListener('dragover', handleDragOver);
                 listItem.addEventListener('drop', handleDrop);
-                listItem.addEventListener('dragenter', (e) => e.preventDefault()); // Also needed to allow dropping
+                listItem.addEventListener('dragenter', (e) => e.preventDefault());
 
                 listContainer.appendChild(listItem);
             });
         }
 
         function handleDragStart(event) {
-            // Store the index of the item we just picked up
-            draggedItemIndex = parseInt(event.target.dataset.index);
-            // Optional: Make the dragged item slightly transparent
-            event.target.style.opacity = '0.5'; 
+            draggedItemIndex = parseInt(event.target.closest('.file-item').dataset.index);
+            event.target.closest('.file-item').style.opacity = '0.5'; 
         }
 
         function handleDragOver(event) {
-            // By default, HTML prevents dropping elements. We must prevent this default behavior.
             event.preventDefault(); 
         }
 
         function handleDrop(event) {
             event.preventDefault();
             
-            // Get the index of the item we are dropping *onto*
-            const targetIndex = parseInt(event.target.dataset.index);
+            const dropTarget = event.target.closest('.file-item');
+            if (!dropTarget) return;
 
-            // If we have a valid drag and drop, and we aren't dropping the item on itself
+            const targetIndex = parseInt(dropTarget.dataset.index);
+
             if (draggedItemIndex !== null && !isNaN(targetIndex) && draggedItemIndex !== targetIndex) {
-                
-                // 1. Remove the dragged item from its original position in the array
                 const [draggedFile] = selectedFilesArray.splice(draggedItemIndex, 1);
-                
-                // 2. Insert it into the new position
                 selectedFilesArray.splice(targetIndex, 0, draggedFile);
-
-                // 3. Re-render the UI to reflect the newly sorted array
                 renderFileList();
             }
             
-            draggedItemIndex = null; // Reset the tracker
+            draggedItemIndex = null;
         }
 
         async function mergePdfs() {
-            // Display a status message
             const statusEl = document.getElementById('status');
             statusEl.textContent = 'Loading Python environment...';
 
-            // Reset state for a new merge
             statusEl.textContent = '';
             downloadLink.style.display = 'none';
-            downloadLink.classList.remove('ready-for-download'); // Remove the class from a previous run
+            downloadLink.classList.remove('ready-for-download');
 
-
-            // 1. Load Pyodide and the pypdf library
             let pyodide = await loadPyodide();
             statusEl.textContent = 'Loading pypdf...';
             await pyodide.loadPackage("micropip");
@@ -115,7 +124,6 @@
                 await micropip.install('pypdf')
             `);
 
-            // 2. Get the files from the HTML input
             const files = selectedFilesArray;
             if (files.length === 0) {
                 statusEl.textContent = 'Please select at least one PDF file.';
@@ -124,7 +132,6 @@
 
             statusEl.textContent = 'Merging PDFs...';
             
-            // 3. Write files to Pyodide's virtual file system
             const fileNames = [];
             for (const file of files) {
                 const data = await file.arrayBuffer();
@@ -133,7 +140,6 @@
                 fileNames.push(file.name);
             }
 
-            // 4. Run the Python script to merge the files
             const mergedFileName = 'merged.pdf';
             await pyodide.runPythonAsync(`
                 from pypdf import PdfWriter
@@ -141,7 +147,6 @@
 
                 merger = PdfWriter()
                 
-                # The files are now available in the virtual file system
                 input_files = ${JSON.stringify(fileNames)};
 
                 for filename in input_files:
@@ -151,10 +156,8 @@
                 merger.close()
             `);
 
-            // 5. Read the merged file from the virtual file system
             const mergedPdfData = pyodide.FS.readFile(mergedFileName, { encoding: 'binary' });
 
-            // 6. Create a Blob and a download link for the user
             const blob = new Blob([mergedPdfData], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
             
@@ -162,7 +165,6 @@
             downloadLink.download = mergedFileName;
             downloadLink.style.display = 'inline';
             
-            // Add the CSS class to trigger the animation
             downloadLink.classList.add('ready-for-download');
             
             statusEl.textContent = 'Merge successful!';
