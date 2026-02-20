@@ -13,6 +13,10 @@
         <input type="file" id="fileInput" multiple accept=".pdf">
         
         <ul id="fileList" style="list-style-type: none; padding: 0;"></ul>
+
+        <div style="margin-bottom: 1rem;">
+            <button id="clearAllBtn" class="btn-danger" onclick="clearAllFiles()" style="display: none;">Clear All Files</button>
+        </div>
         
         <button onclick="mergePdfs()">Merge PDFs</button>
         <div id="status"></div>
@@ -36,10 +40,24 @@
             renderFileList();
         });
 
+        function clearAllFiles() {
+            selectedFilesArray = [];
+            document.getElementById('fileInput').value = ''; // Reset input
+            renderFileList();
+        }
+
         // 3. Render the array to the DOM
         function renderFileList() {
             const listContainer = document.getElementById('fileList');
+            const clearAllBtn = document.getElementById('clearAllBtn');
             listContainer.innerHTML = '';
+
+            // Toggle Clear All button visibility
+            if (selectedFilesArray.length > 0) {
+                clearAllBtn.style.display = 'inline-block';
+            } else {
+                clearAllBtn.style.display = 'none';
+            }
 
             selectedFilesArray.forEach((file, index) => {
                 const listItem = document.createElement('li');

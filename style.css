@@ -133,3 +133,12 @@ button:hover {
 .delete-btn:hover {
     color: #a71d2a;
 }
+
+/* Clear All Button Styles */
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
