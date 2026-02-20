@@ -22,6 +22,7 @@
     <script>
         // 1. Create a global array to store the files (since the default FileList is immutable)
         let selectedFilesArray = [];
+        let draggedItemIndex = null; // Tracks the index of the item currently being dragged
 
         // 2. Listen for the 'change' event on the file input
         document.getElementById('fileInput').addEventListener('change', function(event) {
@@ -46,10 +47,55 @@
                 listItem.style.border = '1px solid #ddd';
                 listItem.style.borderRadius = '4px';
 
+                // Make the item draggable and store its array index
+                listItem.draggable = true;
+                listItem.dataset.index = index;
+                listItem.style.cursor = 'grab'; // Visual cue that it can be grabbed
+
+                // Attach drag-and-drop event listeners
+                listItem.addEventListener('dragstart', handleDragStart);
+                listItem.addEventListener('dragover', handleDragOver);
+                listItem.addEventListener('drop', handleDrop);
+                listItem.addEventListener('dragenter', (e) => e.preventDefault()); // Also needed to allow dropping
+
                 listContainer.appendChild(listItem);
             });
         }
-        
+
+        function handleDragStart(event) {
+            // Store the index of the item we just picked up
+            draggedItemIndex = parseInt(event.target.dataset.index);
+            // Optional: Make the dragged item slightly transparent
+            event.target.style.opacity = '0.5'; 
+        }
+
+        function handleDragOver(event) {
+            // By default, HTML prevents dropping elements. We must prevent this default behavior.
+            event.preventDefault(); 
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            
+            // Get the index of the item we are dropping *onto*
+            const targetIndex = parseInt(event.target.dataset.index);
+
+            // If we have a valid drag and drop, and we aren't dropping the item on itself
+            if (draggedItemIndex !== null && !isNaN(targetIndex) && draggedItemIndex !== targetIndex) {
+                
+                // 1. Remove the dragged item from its original position in the array
+                const [draggedFile] = selectedFilesArray.splice(draggedItemIndex, 1);
+                
+                // 2. Insert it into the new position
+                selectedFilesArray.splice(targetIndex, 0, draggedFile);
+
+                // 3. Re-render the UI to reflect the newly sorted array
+                renderFileList();
+            }
+            
+            draggedItemIndex = null; // Reset the tracker
+        }
+
         async function mergePdfs() {
             // Display a status message
             const statusEl = document.getElementById('status');
