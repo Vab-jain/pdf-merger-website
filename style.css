@@ -89,3 +89,42 @@ button:hover {
     padding: 10px;
     border-radius: 5px;
 }
+
+/* Drag and Drop List Styles */
+#fileList {
+    list-style-type: none;
+    padding: 0;
+    margin: 1rem 0;
+    text-align: left; /* Aligns file names to the left for better readability */
+}
+
+.file-item {
+    display: flex;             /* Align the handle and text horizontally */
+    align-items: center;       /* Center them vertically */
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    cursor: grab; 
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Add styles specific to the new drag handle */
+.drag-handle {
+    margin-right: 0.75rem;     /* Space between the icon and the file name */
+    color: #888;               /* A muted grey so it isn't distracting */
+    font-size: 1.2rem;         /* Make the icon slightly larger */
+    cursor: grab;
+}
+
+.file-item:hover {
+    background-color: #e9ecef; /* Slight darkening on hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.file-item:active {
+    cursor: grabbing; /* Changes cursor when the user is actively dragging */
+    background-color: #e0f7fa; /* Highlights the item being held */
+}

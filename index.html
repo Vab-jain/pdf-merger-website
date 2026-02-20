@@ -38,19 +38,18 @@
 
             selectedFilesArray.forEach((file, index) => {
                 const listItem = document.createElement('li');
-                listItem.textContent = file.name;
-                
-                // Add some basic inline styling for now (we'll expand on this in the CSS commit)
-                listItem.style.padding = '0.5rem';
-                listItem.style.margin = '0.5rem 0';
-                listItem.style.backgroundColor = '#f9f9f9';
-                listItem.style.border = '1px solid #ddd';
-                listItem.style.borderRadius = '4px';
-
-                // Make the item draggable and store its array index
+                listItem.classList.add('file-item');
                 listItem.draggable = true;
                 listItem.dataset.index = index;
-                listItem.style.cursor = 'grab'; // Visual cue that it can be grabbed
+
+                // 1. Create the drag handle
+                const dragHandle = document.createElement('span');
+                dragHandle.innerHTML = '&#9776;'; // Unicode for the three horizontal bars
+                dragHandle.classList.add('drag-handle');
+
+                // 2. Add the handle and the file name to the list item
+                listItem.appendChild(dragHandle);
+                listItem.appendChild(document.createTextNode(file.name));
 
                 // Attach drag-and-drop event listeners
                 listItem.addEventListener('dragstart', handleDragStart);
@@ -117,7 +116,7 @@
             `);
 
             // 2. Get the files from the HTML input
-            const files = document.getElementById('fileInput').files;
+            const files = selectedFilesArray;
             if (files.length === 0) {
                 statusEl.textContent = 'Please select at least one PDF file.';
                 return;
